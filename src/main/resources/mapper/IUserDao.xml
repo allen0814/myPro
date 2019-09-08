@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyl.dao.IUserDao">  <!--对应DAO的目录-->
+
+    <select id="findUser" resultType="com.lyl.entity.User">
+        SELECT id,
+                username,
+                password,
+                phone,
+                sex,
+                description
+        from test_user
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="id != null and id != ''">
+                AND id = #{id}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND username =#{userName}
+            </if>
+            <if test="passWord != null and passWord != ''">
+                AND password =#{passWord}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <insert id="saveUser">
+        insert into test_user (id,username,password,phone)
+        values (REPLACE(UUID(),"-",""),#{userName},#{passWord},#{phone})
+    </insert>
+
+    <update id="updateUserinfo">
+        update test_user
+        set username = #{userName},
+            sex = #{sex},
+            description = #{description}
+        where id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        update test_user
+        set password = #{passWord}
+        where id = #{id}
+    </update>
+
+
+
+</mapper>

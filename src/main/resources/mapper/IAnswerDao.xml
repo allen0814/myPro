@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyl.dao.IAnswerDao">  <!--对应DAO的目录-->
+
+    <insert id="saveAnswer">
+        insert into answer
+        (id,question_id,content,like_count,comment_count,create_by,create_date)
+        values
+        (#{id},#{questionId},#{content},0,0,#{createBy},now())
+    </insert>
+
+
+    <select id="queryAnswer"  resultType="com.lyl.entity.Answer">
+        SELECT
+            t.id,
+            t.question_id as questionId,
+            t.content,
+            t.like_count as likeCount,
+            t.comment_count as commentCount,
+            u.username as createUserName,
+            t.create_by as createBy,
+            t.create_date as createDate
+        FROM
+            answer t
+            left join test_user u on u.id = t.create_by
+        where t.question_id = #{questionId}
+    </select>
+
+</mapper>

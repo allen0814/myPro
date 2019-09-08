@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyl.dao.IBaseInfoDao">  <!--对应DAO的目录-->
+
+    <insert id="saveBaseInfo">
+        insert into user_base_info (id,name,birthday,sex,place_province,place_city,phone,email,identity,marital,created_date,last_updated_date)
+        values (#{id},#{name},#{birthday},#{sex},#{placeProvince},#{placeCity},#{phone},#{email},#{identity},#{marital},now(),now())
+    </insert>
+
+    <select id="queryBaseInfo" resultType="com.lyl.entity.BaseInfo">
+        SELECT
+            id ,
+            NAME ,
+            birthday ,
+            sex ,
+            place_province AS placeProvince ,
+            place_city AS placeCity ,
+            phone ,
+            email ,
+            identity ,
+            marital,
+            created_date as createdDate,
+            last_updated_date as lastUpdatedDate
+        FROM
+            user_base_info
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="id != null and id != ''">
+                AND id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                AND NAME like "%" #{name} "%"
+            </if>
+            <if test="birthday != null and birthday != ''">
+                AND birthday =#{birthday}
+            </if>
+            <if test="sex != null and sex != ''">
+                AND sex = #{sex}
+            </if>
+            <if test="placeProvince != null and placeProvince != ''">
+                AND place_province =#{placeProvince}
+            </if>
+            <if test="placeCity != null and placeCity != ''">
+                AND place_city =#{placeCity}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone like "%" #{phone} "%"
+            </if>
+            <if test="email != null and email != ''">
+                AND email  like "%" #{email} "%"
+            </if>
+            <if test="identity != null and identity != ''">
+                AND identity =#{identity}
+            </if>
+            <if test="marital != null and marital != ''">
+                AND marital = #{marital}
+            </if>
+        </trim>
+        order by created_date desc
+    </select>
+
+    <delete id="deleteBaseInfo">
+        delete from user_base_info where id in 
+        <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateBaseInfo">
+        UPDATE user_base_info
+        SET
+            NAME = #{name},
+            birthday = #{birthday},
+            sex = #{sex},
+            place_province = #{placeProvince},
+            place_city = #{placeCity},
+            phone = #{phone},
+            email = #{email},
+            identity = #{identity},
+            marital = #{marital},
+            last_updated_date = now()
+        WHERE id = #{id}
+    </update>
+
+    <select id="provinceCount" resultType="com.lyl.entity.ProvinceCount">
+        select left(place_province,2) as name,count(1) as value
+         from user_base_info
+            where 1=1
+            <if test="sex != null and sex != ''">
+                AND sex = #{sex}
+            </if>
+        group by place_province;
+    </select>
+
+    <select id="birthdayCount" resultType="com.lyl.entity.ProvinceCount">
+        select  count(1) as value,right(left(birthday,7),2) as name
+          from user_base_info
+            where 1=1
+            <if test="sex != null and sex != ''">
+                AND sex = #{sex}
+            </if>
+          group by right(left(birthday,7),2)
+          order by right(left(birthday,7),2)
+    </select>
+
+
+</mapper>

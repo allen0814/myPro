@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyl.dao.IQuestionDao">  <!--对应DAO的目录-->
+
+    <insert id="saveQuestion">
+        insert into question
+            (id,title,tag,content,like_count,answer_count,follow_count,browse_count,create_date,create_by)
+        values
+            (#{id},#{title},#{tag},#{content},0,0,0,0,now(),#{createBy})
+    </insert>
+
+    <select id="queryQuestion" resultType="com.lyl.entity.Question">
+        SELECT
+            t.id,
+            t.title,
+            t.tag,
+            t.answer_count as answerCount,
+            t.like_count as likeCount,
+            t.browse_count as browseCount,
+            u.username as createUserName,
+            t.create_by as createBy,
+            t.create_date as createDate,
+            t.last_respond_by as lastRespondBy,
+            t.last_respond_date as lastRespondDate
+        FROM
+            question t
+        left join test_user u on u.id = t.create_by
+    </select>
+
+    <select id="singleQuestion" resultType="com.lyl.entity.Question">
+        SELECT
+            t.id,
+            t.title,
+            t.tag,
+            t.content,
+            t.answer_count as answerCount,
+            t.like_count as likeCount,
+            t.browse_count as browseCount,
+            t.follow_count as followCount,
+            u.username as createUserName,
+            t.create_by as createBy,
+            t.create_date as createDate
+        FROM
+            question t
+        left join test_user u on u.id = t.create_by
+        where t.id = #{id}
+    </select>
+
+    <update id="updateQuestion">
+        update question
+        SET
+            id = #{id}
+            <if test="answerCount != null and answerCount != ''">
+                ,answer_count = #{answerCount}
+            </if>
+
+            <if test="likeCount != null and likeCount != ''">
+                ,like_count = #{likeCount}
+            </if>
+
+            <if test="browseCount != null and browseCount != ''">
+                ,browse_count = #{browseCount}
+            </if>
+
+            <if test="followCount != null and followCount != ''">
+                ,follow_count = #{followCount}
+            </if>
+
+            <if test="lastRespondBy != null and lastRespondBy != ''">
+                ,last_respond_by = #{lastRespondBy}
+                ,last_respond_date = now()
+            </if>
+        WHERE id = #{id}
+    </update>
+
+</mapper>
