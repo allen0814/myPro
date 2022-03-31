@@ -22,7 +22,7 @@
       <repository.ip>192.168.10.1</repository.ip>
 
       <!-- spring -->
-      <spring.version>4.2.5.RELEASE</spring.version>
+      <spring.version>5.3.18</spring.version>
       <aspectj.version>1.8.8</aspectj.version>
       <!-- spring mvc -->
       <jackson.version>2.4.6</jackson.version>
